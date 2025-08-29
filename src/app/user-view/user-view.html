@@ -1,0 +1,110 @@
+<div class="card">
+  <p-toolbar class="mb-5">
+    <ng-template pTemplate="left">
+      <button pButton pRipple label="Ajouter" icon="pi pi-plus" class="p-button-primary mr-2 mb-2"
+        (click)="openNew()"></button>
+    </ng-template>
+  </p-toolbar>
+
+  <p-table [value]="userList()" dataKey="id" [paginator]="true" [rows]="10" 
+   [globalFilterFields]="['firstName', 'lastName', 'email', 'address', 'phone', 'username']"
+    [loading]="loading" #dt1
+    
+   >
+   <ng-template #caption>
+            <div class="flex justify-between items-center flex-column sm:flex-row">
+                <button pButton label="Clear" class="p-button-outlined mb-2" icon="pi pi-filter-slash"
+                    (click)="clear(dt1)"></button>
+                <p-iconfield iconPosition="left" class="ml-auto">
+                    <p-inputicon>
+                        <i class="pi pi-search"></i>
+                    </p-inputicon>
+                    <input pInputText type="text" (input)="onGlobalFilter(dt1, $event)" placeholder="Search keyword" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+
+    <ng-template  #header>
+      <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Nom utilisateur </th>
+        <th>Email</th>
+        <th>Téléphone</th>
+        <th>Adresse</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-user>
+      <tr>
+        <td>{{ user.lastName }}</td>
+        <td>{{ user.firstName }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.phone }}</td>
+        <td>{{ user.address }}</td>
+        <td>
+          <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+            (click)="editData(user)"></button>
+          <button pButton icon="pi pi-trash" class="p-button-rounded p-button-warning"
+            (click)="deleteData(user)"></button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="7">Aucun utilisateur trouvé.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- Dialog -->
+<p-dialog [(visible)]="displayDialog" [header]="isUpdate ? 'Modifier un utilisateur ' : 'Ajouter un utilisateur' " [modal]="true" [style]="{ width: '30%' }">
+  
+    <div class="p-fluid">
+        <p-fluid class="grid gap-3">
+    <div class="field">
+      <label for="lastName">Nom</label>
+      <input pInputText id="lastName" [(ngModel)]="createUser.lastName" required />
+      <small class="p-error" *ngIf="submitted && !createUser.lastName">Le nom est requis.</small>
+    </div>
+    <div class="field">
+      <label for="firstName">Prénom</label>
+      <input pInputText id="firstName" [(ngModel)]="createUser.firstName" required />
+      <small class="p-error" *ngIf="submitted && !createUser.firstName">Le prénom est requis.</small>
+    </div>
+    <div class="field">
+      <label for="username">Username</label>
+      <input pInputText id="username" [(ngModel)]="createUser.username" required />
+      <small class="p-error" *ngIf="submitted && !createUser.username">Le username est requis.</small>
+    </div>
+    <div class="field">
+      <label for="email">Email</label>
+      <input pInputText id="email" [(ngModel)]="createUser.email" required />
+      <small class="p-error" *ngIf="submitted && !createUser.email">L’email est requis.</small>
+    </div>
+    <div class="field">
+      <label for="phone">Téléphone</label>
+      <input pInputText id="phone" [(ngModel)]="createUser.phone" required />
+      <small class="p-error" *ngIf="submitted && !createUser.phone">Le téléphone est requis.</small>
+    </div>
+    <div class="field">
+      <label for="address">Adresse</label>
+      <input pInputText id="address" [(ngModel)]="createUser.address" required />
+      <small class="p-error" *ngIf="submitted && !createUser.address">L’adresse est requise.</small>
+    </div>
+        </p-fluid>
+
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button pButton label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveData()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }" acceptLabel="Oui" rejectLabel="Non"></p-confirmDialog>
+<p-toast />
